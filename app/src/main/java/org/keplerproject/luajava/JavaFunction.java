@@ -33,7 +33,7 @@ package org.keplerproject.luajava;
  */
 public abstract class JavaFunction
 {
-	
+
 	/**
 	 * This is the state in which this function will exist.
 	 */
