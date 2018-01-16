@@ -47,7 +47,9 @@ add_library( # Sets the name of the library.
              src/main/jni/lua/lundump.c
              src/main/jni/lua/lvm.c
              src/main/jni/lua/lzio.c
-             src/main/jni/android/androidlib.c)
+
+             src/main/jni/android/androidlib.c
+             src/main/jni/android/input_event.c)
 
 add_library( # Sets the name of the library.
              luajava
@@ -78,10 +80,12 @@ find_library( # Sets the name of the path variable.
               # you want CMake to locate.
               log )
 
+
+
 target_link_libraries( # Specifies the target library.
                        luajava
 
                        # Links the target library to the log library
                        # included in the NDK.
                        lua
-                       ${log-lib})
+                     ${log-lib})

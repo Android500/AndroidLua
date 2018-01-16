@@ -1,9 +1,12 @@
+
 print(os.time())
-system.sleep(5000)
+system.sleep(5)
+w,h=system.getScreenSize()
+system.touch(600, 170)
 print(os.time())
 
 print(os.time())
-w,h=system.getScreenSize()
+
 print(os.time())
 print(w)
 print(h)
