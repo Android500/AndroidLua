@@ -271,22 +271,23 @@ public class Main extends Activity implements OnClickListener,
     }
 
     public void onClick(View view) {
-
-        new Handler().postDelayed(new Runnable() {
+        final String src = source.getText().toString();
+        status.setText("");
+        new Thread(new Runnable() {
             @Override
             public void run() {
-                String src = source.getText().toString();
-                status.setText("");
+
                 try {
                     String res = evalLua(src);
-                    status.append(res);
-                    status.append("Finished succesfully");
+//                    status.append(res);
+//                    status.append("Finished succesfully");
                 } catch (LuaException e) {
-                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                     e.printStackTrace();
                 }
             }
-        }, 3000);
+        }).start();
+
     }
 
     private String errorReason(int error) {
