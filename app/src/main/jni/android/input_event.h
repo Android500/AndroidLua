@@ -14,7 +14,7 @@ int write_volume_down();
  * 发送home键指令
  * */
 int write_home_event();
-
+int write_home_page_event();
 /**
  * 发送菜单键命令
  * */

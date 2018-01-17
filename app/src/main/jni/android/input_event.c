@@ -4,7 +4,6 @@
 #include <linux/uinput.h>
 #include <unistd.h>
 #include <stdio.h>
-#include <malloc.h>
 #include <linux/fb.h>
 #include "androidlib.h"
 
@@ -157,6 +156,12 @@ int init_uinput_dev() {
         return -1;
     }
 
+    ret = ioctl(uinput_fd, UI_SET_KEYBIT, KEY_HOMEPAGE);
+    if(ret){
+        ALOGE("ioctl fail:%s(%d)",__FUNCTION__,__LINE__);
+        return -1;
+    }
+
     ret = ioctl(uinput_fd, UI_SET_KEYBIT, KEY_MENU);
     if(ret){
         ALOGE("ioctl fail:%s(%d)",__FUNCTION__,__LINE__);
@@ -201,9 +206,14 @@ int write_home_event(){
     return write_key_event(KEY_HOME);
 }
 
+int write_home_page_event(){
+    return write_key_event(KEY_HOMEPAGE);
+}
+
 int write_menu_event(){
     return write_key_event(KEY_MENU);
 }
+
 
 int write_back_event() {
     return write_key_event(KEY_BACK);

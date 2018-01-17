@@ -10,8 +10,12 @@ system.sleep(2)
 system.volumeDown()
 system.inputText("你好")
 system.back()
+system.sleep(1)
 system.home()
+system.sleep(1)
 system.menu()
+system.sleep(1)
+system.homePage()
 
 print(os.time())
 

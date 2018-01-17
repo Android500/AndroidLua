@@ -17,13 +17,18 @@
 #include "androidlib.h"
 #include "input_event.h"
 #include "shell_cmd.h"
-#include <linux/>
+
+
+
 /*simple sleep*/
 static int system_sleep(lua_State *L) {
     long secs = lua_tointeger(L, -1); /*获取参数/毫秒*/
     usleep(secs * 1000 * 1000);        ///毫秒转微秒
     return 0;                         /*返回0个值，所以为0*/
 }
+
+
+
 
 
 //sendevent /dev/input/event5 3 57 2 && sendevent /dev/input/event5 3 53 266 && sendevent /dev/input/event5 3 54 939 && sendevent /dev/input/event5 1 330 1 && sendevent /dev/input/event5 0 0 0 && sendevent /dev/input/event5 3 57 0 && sendevent /dev/input/event5 1 330 0 && sendevent /dev/input/event5 0 0 0
@@ -127,6 +132,19 @@ static int system_home(lua_State *L){
     return 0;
 }
 
+static int system_homePage(lua_State *L){
+
+    if (init_uinput_dev() < 0) {
+        LOGD("init uinput dev failed");
+        return 0;
+    }
+
+    int result = write_home_page_event();
+    if(result < 0)
+        LOGE("error emulate home page event");
+    return 0;
+}
+
 static int system_menu(lua_State *L){
     int result = write_menu_event();
     if(result < 0)
@@ -143,6 +161,7 @@ static const struct luaL_Reg libs[] = {
         {"volumeDown",         system_volumeDown},
         {"inputText",         system_inputText},
         {"home",         system_home},
+        {"homePage",         system_homePage},
         {"menu",         system_menu},
         {NULL, NULL}  /*the end*/
 };
