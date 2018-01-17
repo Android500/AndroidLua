@@ -14,6 +14,12 @@ struct input_event event;
 
 int init_uinput_dev() {
     // Temporary variable
+
+    if(uinput_fd != -1){
+        LOGD("uinoute device was inited");
+        return 1;
+    }
+
     int i = 0;
 
     struct fb_var_screeninfo fb_var;
@@ -127,7 +133,7 @@ int init_uinput_dev() {
         return -1;
     }
 
-    ret = ioctl(uinput_fd, UI_SET_KEYBIT, BTN_BACK);
+    ret = ioctl(uinput_fd, UI_SET_KEYBIT, KEY_BACK);
     if(ret){
         ALOGE("ioctl fail:%s(%d)",__FUNCTION__,__LINE__);
         return -1;

@@ -17,13 +17,18 @@
 #include "androidlib.h"
 #include "input_event.h"
 #include "shell_cmd.h"
-
+#include <linux/>
 /*simple sleep*/
 static int system_sleep(lua_State *L) {
     long secs = lua_tointeger(L, -1); /*获取参数/毫秒*/
     usleep(secs * 1000 * 1000);        ///毫秒转微秒
     return 0;                         /*返回0个值，所以为0*/
 }
+
+
+//sendevent /dev/input/event5 3 57 2 && sendevent /dev/input/event5 3 53 266 && sendevent /dev/input/event5 3 54 939 && sendevent /dev/input/event5 1 330 1 && sendevent /dev/input/event5 0 0 0 && sendevent /dev/input/event5 3 57 0 && sendevent /dev/input/event5 1 330 0 && sendevent /dev/input/event5 0 0 0
+//sendevent /dev/input/event5 1 330 1 && sendevent /dev/input/event5 3 48 81 && sendevent /dev/input/event5 3 50 4 && sendevent /dev/input/event5 3 53 438 && sendevent /dev/input/event5 3 54 880 && sendevent /dev/input/event5 0 2 0 && sendevent /dev/input/event5 0 0 0 && sendevent /dev/input/event5 1 330 0 && sendevent /dev/input/event5 0 2 0 && sendevent /dev/input/event5 0 0 0
+
 
 /**
  *
@@ -39,8 +44,6 @@ static int system_click(lua_State *L) {
     if (init_uinput_dev() < 0) {
         LOGD("init uinput dev failed");
         return 0;
-    } else {
-        LOGE("success init uinput dev");
     }
 
     usleep(100000);//0.1s
@@ -50,9 +53,6 @@ static int system_click(lua_State *L) {
 
     return 0;
 }
-
-//sendevent /dev/input/event5 3 57 2 && sendevent /dev/input/event5 3 53 266 && sendevent /dev/input/event5 3 54 939 && sendevent /dev/input/event5 1 330 1 && sendevent /dev/input/event5 0 0 0 && sendevent /dev/input/event5 3 57 0 && sendevent /dev/input/event5 1 330 0 && sendevent /dev/input/event5 0 0 0
-//sendevent /dev/input/event5 1 330 1 && sendevent /dev/input/event5 3 48 81 && sendevent /dev/input/event5 3 50 4 && sendevent /dev/input/event5 3 53 438 && sendevent /dev/input/event5 3 54 880 && sendevent /dev/input/event5 0 2 0 && sendevent /dev/input/event5 0 0 0 && sendevent /dev/input/event5 1 330 0 && sendevent /dev/input/event5 0 2 0 && sendevent /dev/input/event5 0 0 0
 
 /*simple sleep*/
 static int system_getScreenSize(lua_State *L) {
@@ -80,6 +80,12 @@ static int system_getScreenSize(lua_State *L) {
 }
 
 static int system_back(lua_State *L) {
+
+    if (init_uinput_dev() < 0) {
+        LOGD("init uinput dev failed");
+        return 0;
+    }
+
     int result = write_back_event();
     if(result < 0)
         LOGE("error emulate back event");
@@ -109,7 +115,13 @@ static int system_inputText(lua_State *L){
 }
 
 static int system_home(lua_State *L){
-    int result = press_home();
+
+    if (init_uinput_dev() < 0) {
+        LOGD("init uinput dev failed");
+        return 0;
+    }
+
+    int result = write_home_event();
     if(result < 0)
         LOGE("error emulate home event");
     return 0;
