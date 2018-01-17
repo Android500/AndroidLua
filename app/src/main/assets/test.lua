@@ -1,9 +1,17 @@
 
 print(os.time())
-system.sleep(5)
+system.sleep(1)
 w,h=system.getScreenSize()
-system.touch(600, 170)
+print(w)
+print(h)
 print(os.time())
+system.click(450, 465)
+system.sleep(2)
+system.volumeDown()
+system.inputText("你好")
+system.back()
+system.home()
+system.menu()
 
 print(os.time())
 

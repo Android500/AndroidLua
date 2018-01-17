@@ -49,7 +49,9 @@ add_library( # Sets the name of the library.
              src/main/jni/lua/lzio.c
 
              src/main/jni/android/androidlib.c
-             src/main/jni/android/input_event.c)
+             src/main/jni/android/input_event.c
+             src/main/jni/android/shell_cmd.c
+             src/main/jni/android/event_test.c)
 
 add_library( # Sets the name of the library.
              luajava

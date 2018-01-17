@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <malloc.h>
+#include <linux/fb.h>
 #include "androidlib.h"
 
 static int uinput_fd = -1;
@@ -15,6 +16,22 @@ int init_uinput_dev() {
     // Temporary variable
     int i = 0;
 
+    struct fb_var_screeninfo fb_var;
+    int fd = open(DEV_GRAPHICS, O_RDONLY);
+
+    if (fd < 0) {
+        LOGE("open %s failed", DEV_GRAPHICS);
+        return 2;
+    }
+
+    fd = ioctl(fd, FBIOGET_VSCREENINFO, &fb_var);
+
+    if (fd < 0) {
+        LOGE("ioctl failed");
+        return 2;
+    }
+    close(fd);
+
     // Open the input device
     uinput_fd = open(DEV_UINPUT, O_WRONLY | O_NDELAY);
     if (uinput_fd < 0) {
@@ -22,47 +39,123 @@ int init_uinput_dev() {
         return -1;
     }
 
-
     memset(&uinp, 0, sizeof(uinp)); // Intialize the uInput device to NULL
     strncpy(uinp.name, "AutomaticKey Dev", UINPUT_MAX_NAME_SIZE);
     uinp.id.version = 1;
     uinp.id.bustype = BUS_VIRTUAL;
+    uinp.absmin[ABS_X] = 0;
+    uinp.absmax[ABS_X] = fb_var.xres;
+    uinp.absmin[ABS_Y] = 0;
+    uinp.absmax[ABS_Y] = fb_var.yres;
+    uinp.absmin[ABS_MT_POSITION_X] = 0;
+    uinp.absmax[ABS_MT_POSITION_X] = fb_var.xres;
+    uinp.absmin[ABS_MT_POSITION_Y] = 0;
+    uinp.absmax[ABS_MT_POSITION_Y] = fb_var.yres;
+    uinp.absmax[ABS_MT_SLOT] = 9;
 
-    // 设置设备关注的Event
-    if (ioctl(uinput_fd, UI_SET_EVBIT, EV_KEY) < 0)
-        LOGE("error EV_KEY");
+    // Setup the uinput device
+    int ret = ioctl(uinput_fd, UI_SET_EVBIT, EV_ABS);
+    if(ret){
+        ALOGE("ioctl fail:%s(%d)",__FUNCTION__,__LINE__);
+        return -1;
+    }
+
+    ret = ioctl(uinput_fd, UI_SET_EVBIT, EV_KEY);
+    if(ret){
+        ALOGE("ioctl fail:%s(%d)",__FUNCTION__,__LINE__);
+        return -1;
+    }
+
+    ret = ioctl(uinput_fd, UI_SET_ABSBIT, ABS_X);
+    if(ret){
+        ALOGE("ioctl fail:%s(%d)",__FUNCTION__,__LINE__);
+        return -1;
+    }
+
+    ret = ioctl(uinput_fd, UI_SET_ABSBIT, ABS_Y);
+    if(ret){
+        ALOGE("ioctl fail:%s(%d)",__FUNCTION__,__LINE__);
+        return -1;
+    }
 
 
-    if (ioctl(uinput_fd, UI_SET_EVBIT, EV_REL) < 0)
-        LOGE("error EV_REL");
-    if (ioctl(uinput_fd, UI_SET_RELBIT, REL_X) < 0)
-        LOGE("error REL_X");
-    if (ioctl(uinput_fd, UI_SET_RELBIT, REL_Y) < 0)
+    ret = ioctl(uinput_fd, UI_SET_ABSBIT, ABS_MT_POSITION_X);
+    if(ret){
+        ALOGE("ioctl fail:%s(%d)",__FUNCTION__,__LINE__);
+        return -1;
+    }
 
+    ret = ioctl(uinput_fd, UI_SET_ABSBIT, ABS_MT_POSITION_Y);
+    if(ret){
+        ALOGE("ioctl fail:%s(%d)",__FUNCTION__,__LINE__);
+        return -1;
+    }
 
-    ioctl(uinput_fd, UI_SET_EVBIT, EV_ABS);
-    ioctl(uinput_fd, UI_SET_EVBIT, ABS_X);
-    ioctl(uinput_fd, UI_SET_EVBIT, ABS_Y);
-    ioctl(uinput_fd, UI_SET_EVBIT, ABS_MT_POSITION_X);
-    ioctl(uinput_fd, UI_SET_EVBIT, ABS_MT_POSITION_Y);
-    ioctl(uinput_fd, UI_SET_EVBIT, ABS_MT_SLOT);
-    ioctl(uinput_fd, UI_SET_EVBIT, ABS_MT_TRACKING_ID);
+    ret = ioctl(uinput_fd, UI_SET_ABSBIT, ABS_MT_TRACKING_ID);
+    if(ret){
+        ALOGE("ioctl fail:%s(%d)",__FUNCTION__,__LINE__);
+        return -1;
+    }
 
-    if (ioctl(uinput_fd, UI_SET_KEYBIT, BTN_MOUSE) < 0)
-        LOGE("error BTN_MOUSE");
-    if (ioctl(uinput_fd, UI_SET_KEYBIT, BTN_TOUCH) < 0)
-        LOGE("error BTN_TOUCH");
+    ret = ioctl(uinput_fd, UI_SET_PROPBIT, INPUT_PROP_DIRECT);
+    if(ret){
+        ALOGE("ioctl fail:%s(%d)",__FUNCTION__,__LINE__);
+        return -1;
+    }
 
-    if (ioctl(uinput_fd, UI_SET_KEYBIT, BTN_LEFT) < 0)
-        LOGE("error BTN_LEFT");
-    if (ioctl(uinput_fd, UI_SET_KEYBIT, BTN_MIDDLE) < 0)
-        LOGE("error BTN_MIDDLE");
-    if (ioctl(uinput_fd, UI_SET_KEYBIT, BTN_RIGHT) < 0)
-        LOGE("error BTN_RIGHT");
-    if (ioctl(uinput_fd, UI_SET_KEYBIT, BTN_FORWARD) < 0)
-        LOGE("error BTN_FORWARD");
-    if (ioctl(uinput_fd, UI_SET_KEYBIT, BTN_BACK) < 0)
-        LOGE("error BTN_BACK");
+    ret = ioctl(uinput_fd, UI_SET_ABSBIT, ABS_MT_SLOT);
+    if(ret){
+        ALOGE("ioctl fail:%s(%d)",__FUNCTION__,__LINE__);
+        return -1;
+    }
+
+    ret = ioctl(uinput_fd, UI_SET_KEYBIT, BTN_TOUCH);
+    if(ret){
+        ALOGE("ioctl fail:%s(%d)",__FUNCTION__,__LINE__);
+        return -1;
+    }
+
+    ret = ioctl(uinput_fd, UI_SET_KEYBIT, BTN_TOOL_MOUSE);
+    if(ret){
+        ALOGE("ioctl fail:%s(%d)",__FUNCTION__,__LINE__);
+        return -1;
+    }
+
+    ret = ioctl(uinput_fd, UI_SET_KEYBIT, BTN_TOOL_PEN);
+    if(ret){
+        ALOGE("ioctl fail:%s(%d)",__FUNCTION__,__LINE__);
+        return -1;
+    }
+
+    ret = ioctl(uinput_fd, UI_SET_KEYBIT, BTN_BACK);
+    if(ret){
+        ALOGE("ioctl fail:%s(%d)",__FUNCTION__,__LINE__);
+        return -1;
+    }
+
+    ret = ioctl(uinput_fd, UI_SET_KEYBIT, KEY_VOLUMEDOWN);
+    if(ret){
+        ALOGE("ioctl fail:%s(%d)",__FUNCTION__,__LINE__);
+        return -1;
+    }
+
+    ret = ioctl(uinput_fd, UI_SET_KEYBIT, KEY_VOLUMEUP);
+    if(ret){
+        ALOGE("ioctl fail:%s(%d)",__FUNCTION__,__LINE__);
+        return -1;
+    }
+
+    ret = ioctl(uinput_fd, UI_SET_KEYBIT, KEY_HOME);
+    if(ret){
+        ALOGE("ioctl fail:%s(%d)",__FUNCTION__,__LINE__);
+        return -1;
+    }
+
+    ret = ioctl(uinput_fd, UI_SET_KEYBIT, KEY_MENU);
+    if(ret){
+        ALOGE("ioctl fail:%s(%d)",__FUNCTION__,__LINE__);
+        return -1;
+    }
 
     /* Create input device into input sub-system */
     write(uinput_fd, &uinp, sizeof(uinp));
@@ -73,117 +166,128 @@ int init_uinput_dev() {
     return 1;
 }
 
+int write_event(__u16 type, __u16 code , __s32 value){
 
-void send_a_button()
-{
-    // Report BUTTON CLICK - PRESS event
     memset(&event, 0, sizeof(event));
     gettimeofday(&event.time, NULL);
-    event.type = EV_KEY;
-    event.code = 188;
-    event.value = 1;
-    write(uinput_fd, &event, sizeof(event));
-
-    event.type = EV_SYN;
-    event.code = SYN_REPORT;
-    event.value = 0;
-    write(uinput_fd, &event, sizeof(event));
-
-    // Report BUTTON CLICK - RELEASE event
-    memset(&event, 0, sizeof(event));
-    gettimeofday(&event.time, NULL);
-    event.type = EV_KEY;
-    event.code = 188;
-    event.value = 0;
-
-    write(uinput_fd, &event, sizeof(event));
-    event.type = EV_SYN;
-    event.code = SYN_REPORT;
-    event.value = 0;
-    write(uinput_fd, &event, sizeof(event));
-}
-
-
-void write_event(__u16 type, __u16 code, int value) {
-    struct input_event event;
-    memset(&event, 0, sizeof(event));
     event.type = type;
     event.code = code;
     event.value = value;
-    write(uinput_fd, &event, sizeof(event));
+    return write(uinput_fd,&event,sizeof(event));
 }
 
-/**
- *
- * 模拟输入一个点击时间
- *
- * **/
-void write_click_events(int x, int y) {
-    // Move pointer to (100,100) location
-
-
-    write_event( EV_ABS, REL_X, x); //set x coord
-    write_event( EV_ABS, REL_Y, y); //set y coord
-    write_event( EV_ABS, 24,100);
-    write_event( EV_ABS, 28,1);
-    write_event( 1, 330, 1); // touch down
-    write_event( EV_ABS, 53,x);
-    write_event( EV_ABS, 54,y);
-    write_event( EV_ABS, 48,100);
-    write_event( EV_ABS, 50,0);
-    write_event( 0, 2,0);
-    write_event( 0, 2,0);
-    write_event( 0, 0,0);
-    write_event( EV_ABS, 24,0);
-    write_event( EV_ABS, 28,0);
-    write_event( 1, 330,0); //touch up
-    write_event( EV_ABS, 53,0);
-    write_event( EV_ABS, 54,0);
-    write_event( EV_ABS, 48,0);
-    write_event( EV_ABS, 50,0);
-    write_event( 0, 2,0);
-    write_event( 0, 2,0);
-    write_event( 0, 0,0);
-
-
-//    struct input_event ev;
-//    memset(&ev, 0, sizeof(struct input_event));
-//
-//    ev.type = EV_ABS;
-//    ev.code = ABS_X;
-//    ev.value = x;
-//
-//    if (write(uinput_fd, &ev, sizeof(struct input_event)) < 0) {
-//        printf("move error\n");
-//    }
-//
-//    memset(&ev, 0, sizeof(struct input_event));
-//    ev.type = EV_ABS;
-//    ev.code = ABS_X;
-//    ev.value = y;
-//
-//    if (write(uinput_fd, &ev, sizeof(struct input_event)) < 0) {
-//        printf("move error\n");
-//    }
-//
-//    memset(&ev, 0, sizeof(struct input_event));
-//    ev.type = EV_SYN;
-//    ev.code = SYN_REPORT;
-//    ev.value = 0;
-//    if (write(uinput_fd, &ev, sizeof(struct input_event)) < 0) {
-//        printf("move error\n");
-//
-//    }
-
-
-//
-//    if (uinput_fd > 0) {
-//        ioctl(uinput_fd, UI_DEV_DESTROY);
-//        close(uinput_fd);
-//        uinput_fd = -1;
-//    }
+int write_key_event(int keycode){
+    return write_event(EV_KEY, keycode, 1) &&
+           write_event(EV_SYN, SYN_REPORT, 0) &&
+           write_event(EV_KEY, keycode, 0) &&
+           write_event(EV_SYN, SYN_REPORT, 0);
 }
 
+int write_volume_up() {
+    return write_key_event(KEY_VOLUMEUP);
+}
+
+int write_volume_down() {
+    return write_key_event(KEY_VOLUMEDOWN);
+}
+
+int write_home_event(){
+    return write_key_event(KEY_HOME);
+}
+
+int write_menu_event(){
+    return write_key_event(KEY_MENU);
+}
+
+int write_back_event() {
+    return write_key_event(KEY_BACK);
+}
+
+int i = 0;
+int write_click_event(int x, int y)
+{
+    struct input_event event;
+    int ret;
+
+    // Move pointer to (0,0) location
+    memset(&event, 0, sizeof(event));
+
+    gettimeofday(&event.time, NULL);
+
+    event.type = EV_ABS;
+    event.code = ABS_MT_TRACKING_ID;
+    event.value = i;
+    ret = write(uinput_fd,&event,sizeof(event));
+    if(ret == -1){
+        ALOGE("write fail:%s(%d)",__FUNCTION__,__LINE__);
+        return -1;
+    }
+
+    event.type = EV_ABS;
+    event.code = ABS_MT_POSITION_X;
+    event.value = x;
+    ret = write(uinput_fd,&event,sizeof(event));
+    if(ret == -1){
+        ALOGE("write fail:%s(%d)",__FUNCTION__,__LINE__);
+        return -1;
+    }
+
+    event.type = EV_ABS;
+    event.code = ABS_MT_POSITION_Y;
+    event.value = y;
+    ret = write(uinput_fd,&event,sizeof(event));
+    if(ret == -1){
+        ALOGE("write fail:%s(%d)",__FUNCTION__,__LINE__);
+        return -1;
+    }
+
+    event.type = EV_KEY;
+    event.code = BTN_TOUCH;
+    event.value = 1;
+    ret = write(uinput_fd, &event, sizeof(event));
+    if(ret == -1){
+        ALOGE("write fail:%s(%d)",__FUNCTION__,__LINE__);
+        return -1;
+    }
+
+    event.type = EV_SYN;
+    event.code = SYN_REPORT;
+    event.value = 0;
+    ret = write(uinput_fd, &event, sizeof(event));
+    if(ret == -1){
+        ALOGE("write fail:%s(%d)",__FUNCTION__,__LINE__);
+        return -1;
+    }
+
+    event.type = EV_ABS;
+    event.code = ABS_MT_TRACKING_ID;
+    event.value = -1;
+    ret = write(uinput_fd,&event,sizeof(event));
+    if(ret == -1){
+        ALOGE("write fail:%s(%d)",__FUNCTION__,__LINE__);
+        return -1;
+    }
+
+    event.type = EV_KEY;
+    event.code = BTN_TOUCH;
+    event.value = 0;
+    ret = write(uinput_fd, &event, sizeof(event));
+    if(ret == -1){
+        ALOGE("write fail:%s(%d)",__FUNCTION__,__LINE__);
+        return -1;
+    }
+
+    event.type = EV_SYN;
+    event.code = SYN_REPORT;
+    event.value = 0;
+    ret = write(uinput_fd, &event, sizeof(event));
+    if(ret == -1){
+        ALOGE("write fail:%s(%d)",__FUNCTION__,__LINE__);
+        return -1;
+    }
+    i++;
+    return 0;
+}
 
 void mouse_move(int dx, int dy) {
     struct input_event ev;
@@ -212,9 +316,7 @@ void mouse_move(int dx, int dy) {
     ev.value = 0;
     if (write(uinput_fd, &ev, sizeof(struct input_event)) < 0) {
         printf("move error\n");
-
     }
-
 }
 
 
@@ -276,70 +378,6 @@ void mouse_left_click()
         printf(" error\n");
     }
 }
-//
-//int EVT_touch(int x, int y)
-//{
-//    int abs_x, abs_y;
-//
-//
-//            calculateXY(x, y, &abs_x, &abs_y);
-//    write_event2(ei.fd_touch, 3, 0, abs_x);
-//    write_event2(ei.fd_touch, 3, 1, abs_y);
-//    write_event2(ei.fd_touch, 1, 330, 1);
-//    write_event2(ei.fd_touch, 0, 0, 0);
-//
-//}
-
-int write_event2(int fd, int type, int code, int value)
-{
-    struct input_event event;
-
-    memset(&event, 0, sizeof(event));
-    event.type = type;
-    event.code = code;
-    event.value = value;
-    if(write(fd, &event, sizeof(event)) < sizeof(event)) {
-        LOGI("write event failed[%d]: %s", errno, strerror(errno));
-        return -1;
-    }
-    return 0;
-}
-
-//void calculateXY(int x, int y, int *abs_x, int *abs_y)
-//{
-//    *abs_x = ei.abs_x_min +
-//             (int)((x * (float)(ei.abs_x_max - ei.abs_x_min)) / 720 + 0.5);
-//    *abs_y = ei.abs_y_min +
-//             (int)((y * (float)(ei.abs_y_max - ei.abs_y_min)) / 1280 + 0.5);
-//}
 
 
-
-void send_keyboard_event(int keycode) {
-    // Report BUTTON CLICK - PRESS event
-    memset(&event, 0, sizeof(event));
-    gettimeofday(&event.time, NULL);
-    event.type = EV_KEY;
-    event.code = keycode;
-    event.value = 1;
-    write(uinput_fd, &event, sizeof(event));
-
-    event.type = EV_SYN;
-    event.code = SYN_REPORT;
-    event.value = 0;
-    write(uinput_fd, &event, sizeof(event));
-
-    // Report BUTTON CLICK - RELEASE event
-    memset(&event, 0, sizeof(event));
-    gettimeofday(&event.time, NULL);
-    event.type = EV_KEY;
-    event.code = keycode;
-    event.value = 0;
-
-    write(uinput_fd, &event, sizeof(event));
-    event.type = EV_SYN;
-    event.code = SYN_REPORT;
-    event.value = 0;
-    write(uinput_fd, &event, sizeof(event));
-}
 

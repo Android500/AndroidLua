@@ -81,11 +81,19 @@ public class Main extends Activity implements OnClickListener,
 
         source.setText(
                 "print(os.time())\n" +
+                "system.sleep(1)\n" +
                 "w,h=system.getScreenSize()\n" +
+                "print(w)\n" +
+                "print(h)\n" +
                 "print(os.time())\n" +
-                        "print(w)\n" +
-                        "print(h)\n" +
-                        "system.touch(600, 170)\n" );
+                "system.click(450, 465)\n" +
+                "system.sleep(2)\n" +
+                "system.volumeDown()\n" +
+                "system.inputText(\"你好\")\n" +
+                "system.back()\n" +
+                "system.home()\n" +
+                "system.menu()");
+
         status = (TextView) findViewById(R.id.statusText);
         status.setMovementMethod(ScrollingMovementMethod.getInstance());
 

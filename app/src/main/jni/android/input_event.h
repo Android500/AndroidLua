@@ -6,8 +6,19 @@
 #define ANDROIDLUA_INPUT_EVENT_H
 int init_uinput_dev();
 void mouse_move(int dx, int dy);
-void write_click_events(int x, int y);
-void send_keyboard_event(int keycode);
-void mouse_left_click();
-void send_a_button();
+int write_click_event(int x, int y);
+int write_back_event();
+int write_volume_up();
+int write_volume_down();
+/**
+ * 发送home键指令
+ * */
+int write_home_event();
+
+/**
+ * 发送菜单键命令
+ * */
+int write_menu_event();
+
+int write_touch_button(int x, int y, int down);
 #endif //ANDROIDLUA_INPUT_EVENT_H
