@@ -79,32 +79,34 @@ public class Main extends Activity implements OnClickListener,
 
         requestDevPermission();
 
-        source.setText("w,h=system.getScreenSize()\n" +
-                        "system.init()\n" +
-                        "print(os.time())\n" +
-                        "system.sleep(1)\n" +
-                        "print(w)\n" +
-                        "print(h)\n" +
-                        "print(os.time())\n" +
-                        "system.click(450, 465)\n" +
-                        "system.sleep(1)\n" +
-                        "system.click(100, 465)\n" +
-                        "system.sleep(1)\n" +
-                        "system.click(200, 465)\n" +
-                        "system.sleep(1)\n" +
-                        "system.click(300, 465)\n" +
-                        "system.sleep(2)\n" +
-                        "system.volumeDown()\n" +
-                        "system.inputText(\"你好\")\n" +
-                        "system.back()\n" +
-                        "system.sleep(1)\n" +
-                        "system.home()\n" +
-                        "system.sleep(1)\n" +
-                        "system.menu()\n" +
-                        "system.sleep(1)\n" +
-                        "system.homePage()\n" +
-                        "system.sleep(1)\n" +
-                        "system.close()\n");
+        source.setText(
+                "w,h=system.getScreenSize()\n" +
+                "system.init()\n" +
+                "print(os.time())\n" +
+                "system.sleep(1)\n" +
+                "print(w)\n" +
+                "print(h)\n" +
+                "print(os.time())\n" +
+                "system.click(450, 465)\n" +
+                "system.sleep(1)\n" +
+                "system.click(100, 465)\n" +
+                "system.sleep(1)\n" +
+                "system.click(200, 465)\n" +
+                "system.sleep(1)\n" +
+                "system.click(300, 465)\n" +
+                "system.sleep(2)\n" +
+                "system.volumeDown()\n" +
+                "system.inputText(\"你好\")\n" +
+                "system.back()\n" +
+                "system.sleep(1)\n" +
+                "system.home()\n" +
+                "system.sleep(1)\n" +
+                "system.menu()\n" +
+                "system.sleep(1)\n" +
+                "system.homePage()\n" +
+                "system.sleep(1)\n" +
+                "system.runApp(\"com.tencent.now/.app.startup.LauncherActivity\")\n" +
+                "system.close()\n");
 
         status = (TextView) findViewById(R.id.statusText);
         status.setMovementMethod(ScrollingMovementMethod.getInstance());

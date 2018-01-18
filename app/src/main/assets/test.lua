@@ -17,6 +17,7 @@ system.menu()
 system.sleep(1)
 system.homePage()
 system.sleep(1)
+system.runApp("com.tencent.now/.app.startup.LauncherActivity")
 system.close()
 
 print(os.time())

@@ -17,6 +17,16 @@ int input_text(char *content){
     return system(cmd);
 }
 
+
+int run_app(char *action){
+
+    int length = sizeof(CMD_RUN_APP) + sizeof(action) + sizeof(USER);
+    char *cmd = malloc(sizeof(char) * length);
+    sprintf(cmd, "%s%s %s", CMD_RUN_APP, action, USER);
+    LOGE("%s:%s", __FUNCTION__, cmd);
+    return system(cmd);
+}
+
 int press_home(){
 
     int length = sizeof(CMD_HOME) + sizeof(USER);

@@ -155,6 +155,16 @@ static int system_menu(lua_State *L){
     return 0;
 }
 
+static int system_runApp(lua_State *L){
+
+    const char *action = lua_tostring(L, -1); /*获取参数X*/
+
+    int result = run_app(action);
+    if(result < 0)
+        LOGE("error run app:%s", action);
+    return 0;
+}
+
 static int system_close(lua_State *L){
     int result = destroy();
     if(result < 0)
@@ -163,9 +173,11 @@ static int system_close(lua_State *L){
 }
 
 static const struct luaL_Reg libs[] = {
+        {"getScreenSize", system_getScreenSize},
+        {"runApp",        system_runApp},
+
         {"init",          system_init},
         {"sleep",         system_sleep},
-        {"getScreenSize", system_getScreenSize},
         {"click",         system_click},
         {"back",          system_back}, //测试未通过
         {"volumeUp",      system_volumeUp},
@@ -175,7 +187,7 @@ static const struct luaL_Reg libs[] = {
         {"homePage",      system_homePage},
         {"menu",          system_menu},
         {"menu",          system_menu},
-        {"close",          system_close},
+        {"close",         system_close},
         {NULL, NULL}  /*the end*/
 };
 
