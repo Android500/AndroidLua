@@ -1,7 +1,7 @@
-
+w,h=system.getScreenSize()
+system.init()
 print(os.time())
 system.sleep(1)
-w,h=system.getScreenSize()
 print(w)
 print(h)
 print(os.time())
@@ -16,6 +16,8 @@ system.sleep(1)
 system.menu()
 system.sleep(1)
 system.homePage()
+system.sleep(1)
+system.close()
 
 print(os.time())
 

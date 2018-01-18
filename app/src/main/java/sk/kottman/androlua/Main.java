@@ -53,13 +53,13 @@ public class Main extends Activity implements OnClickListener,
 
     private void requestDevPermission() {
 
-        String[] commands = new String[8];
-        for (int i = 0; i < commands.length; i++) {
+        String[] commands = new String[10];
+        for (int i = 0; i < 9; i++) {
             commands[i] = "chmod 777 /dev/input/event" + i + "\n";
         }
+        commands[9] = "chmod 777 /dev/uinput" + "\n";
         RootPermission.rootPermission(commands);
 
-        RootPermission.rootPermission("su -c chmod 777 /dev/uinput");
     }
 
     /**
@@ -79,24 +79,32 @@ public class Main extends Activity implements OnClickListener,
 
         requestDevPermission();
 
-        source.setText(
-                "print(os.time())\n" +
-                "system.sleep(1)\n" +
-                "w,h=system.getScreenSize()\n" +
-                "print(w)\n" +
-                "print(h)\n" +
-                "print(os.time())\n" +
-                "system.click(450, 465)\n" +
-                "system.sleep(2)\n" +
-                "system.volumeDown()\n" +
-                "system.inputText(\"你好\")\n" +
-                "system.back()\n" +
-                "system.sleep(1)\n" +
-                "system.home()\n" +
-                "system.sleep(1)\n" +
-                "system.menu()\n" +
-                "system.sleep(1)\n" +
-                "system.homePage()");
+        source.setText("w,h=system.getScreenSize()\n" +
+                        "system.init()\n" +
+                        "print(os.time())\n" +
+                        "system.sleep(1)\n" +
+                        "print(w)\n" +
+                        "print(h)\n" +
+                        "print(os.time())\n" +
+                        "system.click(450, 465)\n" +
+                        "system.sleep(1)\n" +
+                        "system.click(100, 465)\n" +
+                        "system.sleep(1)\n" +
+                        "system.click(200, 465)\n" +
+                        "system.sleep(1)\n" +
+                        "system.click(300, 465)\n" +
+                        "system.sleep(2)\n" +
+                        "system.volumeDown()\n" +
+                        "system.inputText(\"你好\")\n" +
+                        "system.back()\n" +
+                        "system.sleep(1)\n" +
+                        "system.home()\n" +
+                        "system.sleep(1)\n" +
+                        "system.menu()\n" +
+                        "system.sleep(1)\n" +
+                        "system.homePage()\n" +
+                        "system.sleep(1)\n" +
+                        "system.close()\n");
 
         status = (TextView) findViewById(R.id.statusText);
         status.setMovementMethod(ScrollingMovementMethod.getInstance());
@@ -105,7 +113,6 @@ public class Main extends Activity implements OnClickListener,
 
         L = LuaStateFactory.newLuaState();
         L.openLibs();
-
         try {
             L.pushJavaObject(this);
             L.setGlobal("activity");

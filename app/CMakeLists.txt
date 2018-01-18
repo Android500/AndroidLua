@@ -11,6 +11,9 @@ cmake_minimum_required(VERSION 3.4.1)
 # Gradle automatically packages shared libraries with your APK.
 
 
+
+
+
 add_library( # Sets the name of the library.
              lua
 
@@ -51,7 +54,9 @@ add_library( # Sets the name of the library.
              src/main/jni/android/androidlib.c
              src/main/jni/android/input_event.c
              src/main/jni/android/shell_cmd.c
-             src/main/jni/android/event_test.c)
+             src/main/jni/android/event_test.c )
+
+
 
 add_library( # Sets the name of the library.
              luajava
@@ -90,4 +95,4 @@ target_link_libraries( # Specifies the target library.
                        # Links the target library to the log library
                        # included in the NDK.
                        lua
-                     ${log-lib})
+                       ${log-lib})

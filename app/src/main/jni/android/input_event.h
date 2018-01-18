@@ -19,6 +19,7 @@ int write_home_page_event();
  * 发送菜单键命令
  * */
 int write_menu_event();
-
+/**销毁虚拟输入设备*/
+int destroy();
 int write_touch_button(int x, int y, int down);
 #endif //ANDROIDLUA_INPUT_EVENT_H
