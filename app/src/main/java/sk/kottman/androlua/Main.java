@@ -10,6 +10,7 @@ import org.keplerproject.luajava.LuaState;
 import org.keplerproject.luajava.LuaStateFactory;
 
 import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.util.*;
@@ -53,13 +54,15 @@ public class Main extends Activity implements OnClickListener,
 
     private void requestDevPermission() {
 
-        String[] commands = new String[10];
-        for (int i = 0; i < 9; i++) {
+        String[] commands = new String[12];
+        commands[0] = "setenforce 0" + "\n";
+        for (int i = 1; i < 10; i++) {
             commands[i] = "chmod 777 /dev/input/event" + i + "\n";
         }
-        commands[9] = "chmod 777 /dev/uinput" + "\n";
-        RootPermission.rootPermission(commands);
 
+        commands[10] = "chmod 777 /dev/uinput" + "\n";
+        commands[11] = "chmod 777 /dev/graphics/fb0" + "\n";
+        RootPermission.rootPermission(commands);
     }
 
     /**
@@ -79,34 +82,50 @@ public class Main extends Activity implements OnClickListener,
 
         requestDevPermission();
 
-        source.setText(
-                "w,h=system.getScreenSize()\n" +
-                "system.init()\n" +
-                "print(os.time())\n" +
-                "system.sleep(1)\n" +
-                "print(w)\n" +
-                "print(h)\n" +
-                "print(os.time())\n" +
-                "system.click(450, 465)\n" +
-                "system.sleep(1)\n" +
-                "system.click(100, 465)\n" +
-                "system.sleep(1)\n" +
-                "system.click(200, 465)\n" +
-                "system.sleep(1)\n" +
-                "system.click(300, 465)\n" +
-                "system.sleep(2)\n" +
-                "system.volumeDown()\n" +
-                "system.inputText(\"你好\")\n" +
-                "system.back()\n" +
-                "system.sleep(1)\n" +
-                "system.home()\n" +
-                "system.sleep(1)\n" +
-                "system.menu()\n" +
-                "system.sleep(1)\n" +
-                "system.homePage()\n" +
-                "system.sleep(1)\n" +
-                "system.runApp(\"com.tencent.now/.app.startup.LauncherActivity\")\n" +
-                "system.close()\n");
+        source.setText("require(\"libsystem\")\n" +
+                        "w,h=system.getScreenSize()\n" +
+                        "system.init()\n" +
+                        "print(os.time())\n" +
+                        "system.sleep(1000)\n" +
+                        "print(w)\n" +
+                        "print(h)\n" +
+                        "print(os.time())\n" +
+                        "system.click(450, 465)\n" +
+                        "system.sleep(1000)\n" +
+                        "system.click(100, 465)\n" +
+                        "system.sleep(1000)\n" +
+                        "system.click(200, 465)\n" +
+                        "system.sleep(1000)\n" +
+                        "system.click(300, 465)\n" +
+                        "system.sleep(2000)\n" +
+                        "system.volumeDown()\n" +
+                        "system.inputText(\"你好\")\n" +
+                        "system.back()\n" +
+                        "system.sleep(1000)\n" +
+                        "system.home()\n" +
+                        "system.sleep(1000)\n" +
+                        "system.menu()\n" +
+                        "system.sleep(1000)\n" +
+                        "system.homePage()\n" +
+                        "system.sleep(1000)\n" +
+
+                        "system.touchDown(300, 0)\n" +
+                        "system.sleep(10)\n" +
+                        "system.touchScroll(300, 50)\n" +
+                        "system.sleep(10)\n" +
+                        "system.touchScroll(300, 100)\n" +
+                        "system.sleep(10)\n" +
+                        "system.touchScroll(300, 150)\n" +
+                        "system.sleep(10)\n" +
+                        "system.touchScroll(300, 200)\n" +
+                        "system.sleep(10)\n" +
+                        "system.touchScroll(300, 250)\n" +
+                        "system.sleep(10)\n" +
+                        "system.touchScroll(300, 350)\n" +
+                        "system.sleep(10)\n" +
+                        "system.touchUp(300, 465)\n" +
+
+                        "system.close()\n");
 
         status = (TextView) findViewById(R.id.statusText);
         status.setMovementMethod(ScrollingMovementMethod.getInstance());

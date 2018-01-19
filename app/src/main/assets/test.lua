@@ -1,4 +1,4 @@
-w,h=system.getScreenSize()
+
 system.init()
 print(os.time())
 system.sleep(1)
@@ -17,6 +17,14 @@ system.menu()
 system.sleep(1)
 system.homePage()
 system.sleep(1)
+
+system.init()
+w,h=system.getScreenSize()
+downX = w/2
+downY = y/4
+system.init()
+system.touchDown(downX, downY)
+
 system.runApp("com.tencent.now/.app.startup.LauncherActivity")
 system.close()
 
