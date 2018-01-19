@@ -3,8 +3,8 @@
 //
 
 #include "unistd.h"
-#include "../lua/lua.h"
-#include "../lua/lauxlib.h"
+#include "lua.h"
+#include "lauxlib.h"
 #include <sys/ioctl.h>
 #include <linux/fb.h>
 #include <fcntl.h>
@@ -21,7 +21,7 @@
 /*simple sleep*/
 static int system_sleep(lua_State *L) {
     long secs = lua_tointeger(L, -1); /*获取参数/毫秒*/
-    usleep(secs * 1000 * 1000);        ///毫秒转微秒
+    usleep(secs * 1000);        ///毫秒转微秒
     return 0;                         /*返回0个值，所以为0*/
 }
 
@@ -165,6 +165,38 @@ static int system_runApp(lua_State *L){
     return 0;
 }
 
+static int system_touchDown(lua_State *L){
+
+    int x = lua_tointeger(L, -2); /*获取参数X*/
+    int y = lua_tointeger(L, -1); /*获取参数Y*/
+
+    int result = touchDown(x, y);
+    if(result < 0)
+        LOGE("error esystem_touchDown");
+    return 0;
+}
+
+static int system_touchScroll(lua_State *L){
+
+    int x = lua_tointeger(L, -2); /*获取参数X*/
+    int y = lua_tointeger(L, -1); /*获取参数Y*/
+
+    int result = touchScroll(x, y);
+    if(result < 0)
+        LOGE("system_touchScroll");
+    return 0;
+}
+
+static int system_touchUp(lua_State *L){
+    int x = lua_tointeger(L, -2); /*获取参数X*/
+    int y = lua_tointeger(L, -1); /*获取参数Y*/
+
+    int result = touchUp(x, y);
+    if(result < 0)
+        LOGE("system_touchUp");
+    return 0;
+}
+
 static int system_close(lua_State *L){
     int result = destroy();
     if(result < 0)
@@ -186,7 +218,9 @@ static const struct luaL_Reg libs[] = {
         {"home",          system_home},
         {"homePage",      system_homePage},
         {"menu",          system_menu},
-        {"menu",          system_menu},
+        {"touchUp",       system_touchUp},
+        {"touchScroll",   system_touchScroll},
+        {"touchDown",     system_touchDown},
         {"close",         system_close},
         {NULL, NULL}  /*the end*/
 };

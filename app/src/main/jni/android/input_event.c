@@ -223,6 +223,12 @@ int write_back_event() {
 int i = 0;
 
 int write_click_event(int x, int y) {
+    touchDown(x, y);
+    touchUp(x, y);
+    return 0;
+}
+
+int touchDown(int x, int y){
     struct input_event event;
     int ret;
     LOGE("fd: %d", uinput_fd);
@@ -275,7 +281,41 @@ int write_click_event(int x, int y) {
         ALOGE("write fail:%s(%d)", __FUNCTION__, __LINE__);
         return -1;
     }
+}
+int touchScroll(int x, int y){
+    struct input_event event;
+    int ret;
+    event.type = EV_ABS;
+    event.code = ABS_MT_POSITION_X;
+    event.value = x;
+    ret = write(uinput_fd, &event, sizeof(event));
+    if (ret == -1) {
+        ALOGE("write fail:%s(%d)", __FUNCTION__, __LINE__);
+        return -1;
+    }
 
+    event.type = EV_ABS;
+    event.code = ABS_MT_POSITION_Y;
+    event.value = y;
+    ret = write(uinput_fd, &event, sizeof(event));
+    if (ret == -1) {
+        ALOGE("write fail:%s(%d)", __FUNCTION__, __LINE__);
+        return -1;
+    }
+
+    event.type = EV_SYN;
+    event.code = SYN_REPORT;
+    event.value = 0;
+    ret = write(uinput_fd, &event, sizeof(event));
+    if (ret == -1) {
+        ALOGE("write fail:%s(%d)", __FUNCTION__, __LINE__);
+        return -1;
+    }
+}
+
+int touchUp(int x, int y){
+    struct input_event event;
+    int ret;
     event.type = EV_ABS;
     event.code = ABS_MT_TRACKING_ID;
     event.value = -1;
@@ -301,91 +341,6 @@ int write_click_event(int x, int y) {
     if (ret == -1) {
         ALOGE("write fail:%s(%d)", __FUNCTION__, __LINE__);
         return -1;
-    }
-    i++;
-    return 0;
-}
-
-void mouse_move(int dx, int dy) {
-    struct input_event ev;
-    memset(&ev, 0, sizeof(struct input_event));
-
-    ev.type = EV_REL;
-    ev.code = REL_X;
-    ev.value = dx;
-
-    if (write(uinput_fd, &ev, sizeof(struct input_event)) < 0) {
-        printf("move error\n");
-    }
-
-    memset(&ev, 0, sizeof(struct input_event));
-    ev.type = EV_REL;
-    ev.code = REL_Y;
-    ev.value = dy;
-
-    if (write(uinput_fd, &ev, sizeof(struct input_event)) < 0) {
-        printf("move error\n");
-    }
-
-    memset(&ev, 0, sizeof(struct input_event));
-    ev.type = EV_SYN;
-    ev.code = SYN_REPORT;
-    ev.value = 0;
-    if (write(uinput_fd, &ev, sizeof(struct input_event)) < 0) {
-        printf("move error\n");
-    }
-}
-
-
-void mouse_left_click() {
-    struct input_event ev;
-
-    memset(&ev, 0, sizeof(struct input_event));
-    ev.type = EV_MSC;
-    ev.code = MSC_SCAN;
-    ev.value = 0x90001;
-    if (write(uinput_fd, &ev, sizeof(struct input_event)) < 0) {
-        printf(" error\n");
-    }
-    memset(&ev, 0, sizeof(struct input_event));
-
-    ev.type = EV_KEY;
-    ev.code = 0x110;
-    ev.value = 0x1;
-    if (write(uinput_fd, &ev, sizeof(struct input_event)) < 0) {
-        printf(" error\n");
-    }
-
-    memset(&ev, 0, sizeof(struct input_event));
-    ev.type = EV_SYN;
-    ev.code = SYN_REPORT;
-    ev.value = 0;
-    if (write(uinput_fd, &ev, sizeof(struct input_event)) < 0) {
-        printf("click  error\n");
-    }
-    memset(&ev, 0, sizeof(struct input_event));
-
-    ev.type = EV_MSC;
-    ev.code = MSC_SCAN;
-    ev.value = 0x90001;
-    if (write(uinput_fd, &ev, sizeof(struct input_event)) < 0) {
-        printf(" error\n");
-    }
-
-    memset(&ev, 0, sizeof(struct input_event));
-    ev.type = EV_KEY;
-    ev.code = 0x110;
-    ev.value = 0x0;
-    if (write(uinput_fd, &ev, sizeof(struct input_event)) < 0) {
-        printf(" error\n");
-    }
-
-    memset(&ev, 0, sizeof(struct input_event));
-    ev.type = EV_SYN;
-    ev.code = SYN_REPORT;
-    ev.value = 0;
-    if (write(uinput_fd, &ev, sizeof(struct input_event)) < 0) {
-        printf(" error\n");
     }
 }
 
