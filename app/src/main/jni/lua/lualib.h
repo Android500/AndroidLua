@@ -41,8 +41,8 @@ LUALIB_API int (luaopen_package) (lua_State *L);
 
 
 //自定义system support
-//#define LUA_SYSTEMNAME	"system"
-//LUALIB_API int (luaopen_system) (lua_State *L);
+#define LUA_SYSTEMNAME	"system"
+LUALIB_API int (luaopen_system) (lua_State *L);
 
 
 /* open all previous libraries */

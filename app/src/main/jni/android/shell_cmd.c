@@ -5,6 +5,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include "shell_cmd.h"
 #include "androidlib.h"
 
@@ -22,18 +23,19 @@ int run_app(char *action){
 
     int length = sizeof(CMD_RUN_APP) + sizeof(action) + sizeof(USER);
     char *cmd = malloc(sizeof(char) * length);
-    sprintf(cmd, "%s%s %s", CMD_RUN_APP, action, USER);
+    sprintf(cmd, "%s %s %s", CMD_RUN_APP, USER, action);
     LOGE("%s:%s", __FUNCTION__, cmd);
     return system(cmd);
 }
 
-int press_home(){
 
-    int length = sizeof(CMD_HOME) + sizeof(USER);
+int kill_app(char *packageName){
+    int length = sizeof(CMD_FORCE_STOP) + sizeof(packageName) + sizeof(USER);
     char *cmd = malloc(sizeof(char) * length);
-    sprintf(cmd, "%s %s", CMD_HOME, USER);
-
+    sprintf(cmd, "%s %s %s", CMD_FORCE_STOP, USER, packageName);
     LOGE("%s:%s", __FUNCTION__, cmd);
 
-    system(cmd);
+    execlp("su","su", NULL, NULL,(char *)0);
+    execlp("am","am", cmd,(char *)0);
+    return 0;
 }

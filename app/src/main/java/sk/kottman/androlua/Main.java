@@ -40,7 +40,6 @@ public class Main extends Activity implements OnClickListener,
     final StringBuilder output = new StringBuilder();
 
     Handler handler;
-    ServerThread serverThread;
 
     private static byte[] readAll(InputStream input) throws Exception {
         ByteArrayOutputStream output = new ByteArrayOutputStream(4096);
@@ -81,8 +80,10 @@ public class Main extends Activity implements OnClickListener,
         //source.setText("require 'import'\nprint(Math:sin(2.3))\n");
 
         requestDevPermission();
-
-        source.setText("require(\"libsystem\")\n" +
+        //USER
+        //Permission Denial: startActivity asks to run as user -2 but is calling from user 0; this requires android.permission.INTERACT_ACROSS_USERS_FULL
+        source.setText(
+                "system.runApp(\"com.tencent.now/.app.startup.LauncherActivity\")\n"+
                         "w,h=system.getScreenSize()\n" +
                         "system.init()\n" +
                         "print(os.time())\n" +
@@ -124,7 +125,7 @@ public class Main extends Activity implements OnClickListener,
                         "system.touchScroll(300, 350)\n" +
                         "system.sleep(10)\n" +
                         "system.touchUp(300, 465)\n" +
-
+                        "system.killApp(\"com.tencent.now\")\n" +
                         "system.close()\n");
 
         status = (TextView) findViewById(R.id.statusText);
@@ -205,16 +206,9 @@ public class Main extends Activity implements OnClickListener,
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        serverThread = new ServerThread();
-        serverThread.start();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        serverThread.stopped = true;
+    protected void onDestroy() {
+        super.onDestroy();
+        L.close();
     }
 
     private class ServerThread extends Thread {

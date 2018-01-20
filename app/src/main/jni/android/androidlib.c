@@ -165,6 +165,16 @@ static int system_runApp(lua_State *L){
     return 0;
 }
 
+static int system_killApp(lua_State *L){
+
+    const char *packageName = lua_tostring(L, -1); /*获取参数X*/
+
+    int result = kill_app(packageName);
+    if(result < 0)
+        LOGE("error kill app:%s", packageName);
+    return 0;
+}
+
 static int system_touchDown(lua_State *L){
 
     int x = lua_tointeger(L, -2); /*获取参数X*/
@@ -207,6 +217,7 @@ static int system_close(lua_State *L){
 static const struct luaL_Reg libs[] = {
         {"getScreenSize", system_getScreenSize},
         {"runApp",        system_runApp},
+        {"killApp",       system_killApp},
 
         {"init",          system_init},
         {"sleep",         system_sleep},

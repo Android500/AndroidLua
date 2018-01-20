@@ -49,6 +49,10 @@ add_library( # Sets the name of the library.
              src/main/jni/lua/lvm.c
              src/main/jni/lua/lzio.c
 
+                src/main/jni/android/androidlib.c
+                          src/main/jni/android/input_event.c
+                          src/main/jni/android/shell_cmd.c
+                          src/main/jni/android/event_test.c
           )
 
 add_library( # Sets the name of the library.
@@ -60,17 +64,7 @@ add_library( # Sets the name of the library.
              # Provides a relative path to your source file(s).
              src/main/jni/luajava/luajava.c )
 
-add_library( # Sets the name of the library.
-             system
 
-             # Sets the library as a shared library.
-             SHARED
-
-             # Provides a relative path to your source file(s).
-                 src/main/jni/android/androidlib.c
-                          src/main/jni/android/input_event.c
-                          src/main/jni/android/shell_cmd.c
-                          src/main/jni/android/event_test.c)
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by
@@ -90,13 +84,6 @@ find_library( # Sets the name of the path variable.
               # you want CMake to locate.
               log )
 
-target_link_libraries( # Specifies the target library.
-                       system
-
-                       # Links the target library to the log library
-                       # included in the NDK.
-                       lua
-                       ${log-lib})
 
 target_link_libraries( # Specifies the target library.
                        luajava
@@ -104,4 +91,6 @@ target_link_libraries( # Specifies the target library.
                        # Links the target library to the log library
                        # included in the NDK.
                        lua
+
+                        ${log-lib}
                        )

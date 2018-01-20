@@ -7,6 +7,7 @@
 #define CMD_HOME  "input event 4"
 #define CMD_INPUT_TEXT  "am broadcast -a ADB_INPUT_TEXT --es msg "
 #define CMD_RUN_APP  "am start "
+#define CMD_FORCE_STOP "am force-stop"
 #define USER  "--user 0"
 #define contact(x, y) x##y
 
