@@ -83,13 +83,9 @@ public class Main extends Activity implements OnClickListener,
         //USER
         //Permission Denial: startActivity asks to run as user -2 but is calling from user 0; this requires android.permission.INTERACT_ACROSS_USERS_FULL
         source.setText(
-                "system.runApp(\"com.tencent.now/.app.startup.LauncherActivity\")\n"+
-                        "w,h=system.getScreenSize()\n" +
                         "system.init()\n" +
                         "print(os.time())\n" +
                         "system.sleep(1000)\n" +
-                        "print(w)\n" +
-                        "print(h)\n" +
                         "print(os.time())\n" +
                         "system.click(450, 465)\n" +
                         "system.sleep(1000)\n" +
@@ -100,7 +96,6 @@ public class Main extends Activity implements OnClickListener,
                         "system.click(300, 465)\n" +
                         "system.sleep(2000)\n" +
                         "system.volumeDown()\n" +
-                        "system.inputText(\"你好\")\n" +
                         "system.back()\n" +
                         "system.sleep(1000)\n" +
                         "system.home()\n" +
@@ -125,7 +120,6 @@ public class Main extends Activity implements OnClickListener,
                         "system.touchScroll(300, 350)\n" +
                         "system.sleep(10)\n" +
                         "system.touchUp(300, 465)\n" +
-                        "system.killApp(\"com.tencent.now\")\n" +
                         "system.close()\n");
 
         status = (TextView) findViewById(R.id.statusText);
