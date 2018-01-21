@@ -35,7 +35,5 @@ int kill_app(char *packageName){
     sprintf(cmd, "%s %s %s", CMD_FORCE_STOP, USER, packageName);
     LOGE("%s:%s", __FUNCTION__, cmd);
 
-    execlp("su","su", NULL, NULL,(char *)0);
-    execlp("am","am", cmd,(char *)0);
-    return 0;
+    return system(cmd);
 }
