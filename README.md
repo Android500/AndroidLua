@@ -6,4 +6,4 @@ Android Touch Sprite
 
 -![图表](https://github.com/teddyisme/LCharts/blob/master/gifs/c.gif "录屏")
 
--![AndroidLua](https://github.com/MHuangXin/AndroidLua/tree/master/captures/IMG_0200.GIF)
+-![AndroidLua](https://github.com/MHuangXin/AndroidLua/tree/master/captures/IMG_0200.GIF "录屏")
