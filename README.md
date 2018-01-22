@@ -6,4 +6,4 @@ Android Touch Sprite
 
 
 
-![image](https://github.com/MHuangXin/AndroidLua/tree/master/captures/ezgif.com-crop.git)
+![image](https://github.com/MHuangXin/AndroidLua/tree/master/captures/crop.git)
