@@ -139,7 +139,6 @@ static int system_home(lua_State *L){
 static int system_homePage(lua_State *L){
     usleep(100000);
 
-
     int result = write_home_page_event();
     if(result < 0)
         LOGE("error emulate home page event");
