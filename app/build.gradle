@@ -1,19 +1,18 @@
 apply plugin: 'com.android.application'
-
 android {
-    compileSdkVersion 17
+    compileSdkVersion 26
     buildToolsVersion "26.0.2"
 
     defaultConfig {
         applicationId "sk.kottman.androlua"
-        minSdkVersion 4
+        minSdkVersion 18
         targetSdkVersion 4
-
-        externalNativeBuild {
-            cmake {
-                cppFlags ""
-            }
-        }
+//
+//        externalNativeBuild {
+//            cmake {
+//                cppFlags ""
+//            }
+//        }
     }
 
     buildTypes {
@@ -23,9 +22,13 @@ android {
         }
     }
 
-    externalNativeBuild {
-        cmake {
-            path "CMakeLists.txt"
-        }
-    }
+//    externalNativeBuild {
+//        cmake {
+//            path "CMakeLists.txt"
+//        }
+//    }
+}
+
+dependencies {
+    implementation project(':lua5.3java')
 }
